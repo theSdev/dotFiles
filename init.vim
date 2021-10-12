@@ -1,89 +1,96 @@
-set nocompatible
 set number
 set relativenumber
-syntax on
-set path+=./**                                                                    
-" set wildignore+=**/node_modules/**
-" set path+=ClientApp/**,Areas/**,Controllers/**
-set wildmenu
-set noshowmode
+syntax off
 set hidden
-
-nnoremap ,ts o<C-r>%<Esc>cawts<Esc>dd3u:vert sf <C-r>"<CR>
-nnoremap ,vue o<C-r>%<Esc>cawvue<Esc>dd3u:vert sf <C-r>"<CR>
-
-nnoremap ,e :CocDiagnostics<CR>
-nnoremap ,n :CocDiagnostics<CR><CR><C-w>w:q<CR>
-
+set noswapfile
+set path=$PWD/**
+set wildignore+=**/node_modules/**
+let mapleader=","
 filetype plugin indent on
-" show existing tab with 4 spaces width
-set tabstop=4
-" when indenting with '>', use 4 spaces width
-set shiftwidth=4
-" On pressing tab, insert 4 spaces
+set tabstop=2
+set shiftwidth=2
 set expandtab
 
-" Plugins will be downloaded under the specified directory.
 call plug#begin('~/.vim/plugged')
 
-" Declare the list of plugins.
-Plug 'junegunn/seoul256.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'andymass/vim-matchup'
-Plug 'itchyny/lightline.vim'
+Plug 'pbrisbin/vim-colors-off'
 Plug 'jeetsukumaran/vim-buffergator'
-" Plug 'posva/vim-vue'
-" Plug 'preservim/nerdtree'
-" Plug 'OmniSharp/omnisharp-vim'
+Plug 'sheerun/vim-polyglot'
 
-" List ends here. Plugins become visible to Vim after this call.
 call plug#end()
 
-let g:seoul256_background = 235
-colo seoul256
+colorscheme off
 
-" Lightline
-let g:lightline = {
-      \ 'colorscheme': 'seoul256',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'username', 'cocstatus', 'readonly', 'filename', 'modified' ] ]
-      \ },
-      \ 'component': {
-      \   'username': $USER,
-      \ },
-      \ 'component_function': {
-      \   'filename': 'LightlineFilename',
-      \   'cocstatus': 'coc#status',
-      \ },
-      \ }
+" Close all buffers except the current one
+noremap <leader>d :%bd\|e#\|bd#<cr>\|'"
 
-function! LightlineFilename()
-  return expand('%:t') !=# '' ? @% : '[No Name]'
-endfunction
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-" Use auocmd to force lightline update.
-autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()" use <tab> for trigger completion and navigate to the next complete item
 function! s:check_back_space() abort
   let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-    endfunction
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 
-    inoremap <silent><expr> <Tab>
-          \ pumvisible() ? "\<C-n>" :
-                \ <SID>check_back_space() ? "\<Tab>" :
-                      \ coc#refresh()
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
 
-" navigate suggestion list with tab and shift + tab
-noremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" Make <CR> auto-select the first completion item and notify coc.nvim to
+" format on enter, <cr> could be remapped by other vim plugin
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-" accept seggestion on enter
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" Use `,k` and `,j` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> <leader>k <Plug>(coc-diagnostic-prev)
+nmap <silent> <leader>j <Plug>(coc-diagnostic-next)
 
-" auto format on enter
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+nmap <silent> <leader>N :cp<CR>
+nmap <silent> <leader>n :cn<CR>
 
-" Automatically open NerdTree
-" autocmd vimenter * NERDTree
+nmap <silent> <leader>p :Prettier<CR>
 
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Prettier
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+
+" Remap <C-f> and <C-b> for scroll float windows/popups.
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+
+" Add (Neo)Vim's native statusline support.
+set statusline=%f\ %h%w%m%r\ %=\ %{coc#status()}\ \ %{get(b:,'coc_current_function','')}\ %l\ %c\ %P
