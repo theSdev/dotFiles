@@ -10,6 +10,10 @@ filetype plugin indent on
 set tabstop=2
 set shiftwidth=2
 set expandtab
+set foldmethod=syntax   
+set foldnestmax=1
+set nofoldenable
+set foldlevel=1
 
 call plug#begin('~/.vim/plugged')
 
@@ -17,10 +21,26 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'pbrisbin/vim-colors-off'
 Plug 'jeetsukumaran/vim-buffergator'
 Plug 'sheerun/vim-polyglot'
+Plug 'rust-lang/rust.vim'
+Plug 'Jorengarenar/vim-darkness'
+Plug 'alvan/vim-closetag'
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 
 call plug#end()
 
 colorscheme off
+
+" dict
+" Disables auto-close if not in a "valid" region (based on filetype)
+"
+let g:closetag_regions = {
+    \ 'typescript.tsx': 'jsxRegion,tsxRegion',
+    \ 'javascript.jsx': 'jsxRegion',
+    \ 'typescriptreact': 'jsxRegion,tsxRegion',
+    \ 'javascriptreact': 'jsxRegion',
+    \ }
+
+let g:netrw_liststyle = 3
 
 " Close all buffers except the current one
 noremap <leader>d :%bd\|e#\|bd#<cr>\|'"
@@ -56,6 +76,23 @@ nmap <silent> <leader>N :cp<CR>
 nmap <silent> <leader>n :cn<CR>
 
 nmap <silent> <leader>p :Prettier<CR>
+autocmd FileType rust nmap<buffer> <leader>p :RustFmt<CR>
+:nnoremap <leader>s :sp<cr>
+:nnoremap <leader>v :vert sp<cr>
+:nnoremap <leader>l :silent Ve<CR>
+:nnoremap <leader>e :silent E<CR>
+
+function! s:CloseNetrw() abort
+  for bufn in range(1, bufnr('$'))
+    if bufexists(bufn) && getbufvar(bufn, '&filetype') ==# 'netrw'
+      silent! execute 'bwipeout ' . bufn
+      if getline(2) =~# '^" Netrw '
+        silent! bwipeout
+      endif
+      return
+    endif
+  endfor
+endfunction
 
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
@@ -77,20 +114,47 @@ function! s:show_documentation()
 endfunction
 
 " Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>r <Plug>(coc-rename)
 
 " Prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
-if has('nvim-0.4.0') || has('patch-8.2.0750')
+" if has('nvim-0.4.0') || has('patch-8.2.0750')
   nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
   nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
   inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
   inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
   vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
   vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-endif
+" endif
+
+" Command mode remappings
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
+cnoremap <C-p> <Up>
+cnoremap <C-n> <Down>
+cnoremap <C-b> <Left>
+cnoremap <C-f> <Right>
+cnoremap <M-b> <S-Left>
+cnoremap <M-f> <S-Right>
 
 " Add (Neo)Vim's native statusline support.
 set statusline=%f\ %h%w%m%r\ %=\ %{coc#status()}\ \ %{get(b:,'coc_current_function','')}\ %l\ %c\ %P
+
+function Sunshine(timer)
+  if filereadable("/home/thesdev/.abend")
+    colorscheme darkness
+  else
+    colorscheme off
+    set background=light
+  endif
+endfunction
+
+
+function! AutoDarkModeSetup()
+  let timer = timer_start(10000, 'Sunshine', {'repeat': -1})
+  call Sunshine(timer) " Initial call to setup the theme
+endfunction
+
+call AutoDarkModeSetup()
