@@ -14,6 +14,7 @@ set foldmethod=syntax
 set foldnestmax=1
 set nofoldenable
 set foldlevel=1
+set termguicolors
 
 call plug#begin('~/.vim/plugged')
 
@@ -25,10 +26,14 @@ Plug 'rust-lang/rust.vim'
 Plug 'Jorengarenar/vim-darkness'
 Plug 'alvan/vim-closetag'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+Plug 'APZelos/blamer.nvim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'mhinz/vim-grepper'
 
 call plug#end()
 
 colorscheme off
+autocmd ColorScheme * highlight Pmenu ctermbg=232 ctermfg=red
 
 " dict
 " Disables auto-close if not in a "valid" region (based on filetype)
@@ -77,10 +82,13 @@ nmap <silent> <leader>n :cn<CR>
 
 nmap <silent> <leader>p :Prettier<CR>
 autocmd FileType rust nmap<buffer> <leader>p :RustFmt<CR>
-:nnoremap <leader>s :sp<cr>
-:nnoremap <leader>v :vert sp<cr>
-:nnoremap <leader>l :silent Ve<CR>
-:nnoremap <leader>e :silent E<CR>
+nnoremap <leader>s :sp<cr>
+nnoremap <leader>v :vert sp<cr>
+nnoremap <leader>l :silent Ve<CR>
+nnoremap <leader>e :silent E<CR>
+nnoremap <leader>f :silent FZF<CR>
+nnoremap <leader>g :Grepper<cr>
+let g:grepper = { 'next_tool': '<leader>g' }
 
 function! s:CloseNetrw() abort
   for bufn in range(1, bufnr('$'))
@@ -93,6 +101,20 @@ function! s:CloseNetrw() abort
     endif
   endfor
 endfunction
+
+function! DeleteHiddenBuffers()
+  let tpbl=[]
+  let closed = 0
+  call map(range(1, tabpagenr('$')), 'extend(tpbl, tabpagebuflist(v:val))')
+  for buf in filter(range(1, bufnr('$')), 'bufexists(v:val) && index(tpbl, v:val)==-1')
+    if getbufvar(buf, '&mod') == 0
+      silent execute 'bwipeout' buf
+      let closed += 1
+    endif
+  endfor
+  echo "Closed ".closed." hidden buffers"
+endfunction
+nnoremap <leader>h :call DeleteHiddenBuffers()<cr>
 
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
@@ -118,6 +140,7 @@ nmap <leader>r <Plug>(coc-rename)
 
 " Prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
+command! -nargs=0 Tsc :call CocAction('runCommand', 'tsserver.watchBuild')
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
 " if has('nvim-0.4.0') || has('patch-8.2.0750')
@@ -144,9 +167,8 @@ set statusline=%f\ %h%w%m%r\ %=\ %{coc#status()}\ \ %{get(b:,'coc_current_functi
 
 function Sunshine(timer)
   if filereadable("/home/thesdev/.abend")
-    colorscheme darkness
+    set background=dark
   else
-    colorscheme off
     set background=light
   endif
 endfunction
