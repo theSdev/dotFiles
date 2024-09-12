@@ -129,14 +129,10 @@ source "$OSH"/oh-my-bash.sh
 # alias ohmybash="mate ~/.oh-my-bash"
 
 alias v="nvim"
-alias ns="npm start"
-alias ni="npm i"
-alias nt="npm test"
-alias nd="npm run dev"
+alias ns="npm run start"
+alias ni="npm install"
+alias nt="npm run test"
 alias nb="npm run build"
-alias nc="npm run codegen"
-alias nq="npm run graphql"
-alias ne="npm run test:e2e"
 alias gp="git pull --autostash"
 alias ga="git add ."
 alias gan="git add -N ."
@@ -157,72 +153,7 @@ alias gsh="git show HEAD"
 alias gsp="git stash pop"
 alias gsu="git stash -u"
 alias gbp="git branch --merged main | grep -v '^[ *]*main$' | xargs git branch -d && git remote update origin --prune"
-alias p="cd /home/thesdev/Projects"
-alias fr="set-title 'Roam FM' && cd /home/thesdev/Projects/fleet-manager-roam"
-alias fra="set-title 'Roam API' &&cd /home/thesdev/Projects/fleet-manager-api-roam"
-alias rdb="set-title 'Roam DB' && cd /home/thesdev/Projects/db-roam"
-alias fe="set-title 'EVX FM' && cd /home/thesdev/Projects/fleet-manager-frontend-evx"
-alias fea="set-title 'EVX API' && cd /home/thesdev/Projects/fleet-manager-api-evx"
-alias edb="set-title 'EVX DB' && cd /home/thesdev/Projects/evx-db"
-alias fd="set-title 'Rand FM' && cd /home/thesdev/Projects/fleet-manager-frontend-rand"
-alias fda="set-title 'Rand API' && cd /home/thesdev/Projects/fleet-manager-api-rand"
-alias ddb="set-title 'Rand DB' && cd /home/thesdev/Projects/rand-db"
-alias fc="set-title 'Clean Motion FM' && cd /home/thesdev/Projects/fleet-manager-frontend-clean-motion"
-alias fca="set-title 'Clean Motion API' && cd /home/thesdev/Projects/fleet-manager-api-clean-motion"
-alias cdb="set-title 'Clean Motion DB' && cd /home/thesdev/Projects/clean-motion-db"
-alias fl="set-title 'Elevate Cloud FM' && cd /home/thesdev/Projects/fleet-manager-frontend-elevate-cloud"
-alias fla="set-title 'Elevate Cloud API' && cd /home/thesdev/Projects/fleet-manager-api-elevate-cloud"
-alias ldb="set-title 'Elevate Cloud DB' && cd /home/thesdev/Projects/elevate-cloud-db"
-alias te="set-title 'THETC Email' && cd /home/thesdev/Projects/thetc-email"
-alias ta="set-title 'THETC Auth' && cd /home/thesdev/Projects/thetc-auth"
-alias cr="cargo run"
-alias crr="cargo run run"
-alias cb="cargo build"
-alias cc="cargo check"
-alias cu="cargo update"
-alias ct="cargo test"
-alias spr="cargo sqlx prepare -- --all-targets --all-features"
-alias t="tsc --project tsconfig.json && npm run check-format && npm run lint && vitest run"
-alias tpush="t && git push"
-alias dw="cd /home/thesdev/Projects/discovery_web && source .envrc && source bin/activate"
-alias dwb="cd /home/thesdev/Projects/discovery_web && source .envrc && source bin/activate && ./run_backend.sh"
-alias dwp="cd /home/thesdev/Projects/discovery_web && source .envrc && source bin/activate && cd ./discovery_web"
-alias dwr="cd /home/thesdev/Projects/discovery_web && source .envrc && source bin/activate && cd ./discovery_web/react_frontend"
-alias ys="yarn start"
-alias sb="npm run storybook"
 alias gt="gio trash"
-alias da="direnv allow ."
-alias de="direnv edit ."
-alias esp="set-title 'EVX Stream Processing' && cd /home/thesdev/Projects/evx-stream-processing"
-alias esu="set-title 'EVX Usher' && cd /home/thesdev/Projects/evx-stream-processing && cargo run --bin usher"
-alias esv="set-title 'EVX Vehicle Persistor' && cd /home/thesdev/Projects/evx-stream-processing && cargo run --bin evx_vehicle_persistor_elasticsearch"
-alias esc="set-title 'EVX Scheduler' && cd /home/thesdev/Projects/evx-scheduler"
-alias epu="set-title 'EVX Pulsar' && cd /home/thesdev/Projects/evx-pulsar"
-alias rsp="set-title 'Roam Stream Processing' && cd /home/thesdev/Projects/roam-stream-processing"
-alias rsu="set-title 'Roam Usher' && cd /home/thesdev/Projects/roam-stream-processing && cargo run --bin usher"
-alias rsv="set-title 'Roam Vehicle Persistor' && cd /home/thesdev/Projects/roam-stream-processing && cargo run --bin vehicle_persistor_elasticsearch"
-alias rss="set-title 'Roam SIM Data Volume Persistor' && cd /home/thesdev/Projects/roam-stream-processing && cargo run --bin sim_data_volume_persistor"
-alias rsc="set-title 'Roam Scheduler' && cd /home/thesdev/Projects/roam-scheduler"
-alias rpu="set-title 'Roam Pulsar' && cd /home/thesdev/Projects/roam-pulsar"
-alias dsp="set-title 'Rand Stream Processing' && cd /home/thesdev/Projects/rand-stream-processing"
-alias dsu="set-title 'Rand Usher' && cd /home/thesdev/Projects/rand-stream-processing && cargo run --bin usher"
-alias dsv="set-title 'Rand Boat Persistor' && cd /home/thesdev/Projects/rand-stream-processing && cargo run --bin boat_persistor_elasticsearch"
-alias dsc="set-title 'Rand Scheduler' && cd /home/thesdev/Projects/rand-scheduler"
-alias dpu="set-title 'Rand Pulsar' && cd /home/thesdev/Projects/rand-pulsar"
-alias csp="set-title 'Clean Motion Stream Processing' && cd /home/thesdev/Projects/clean-motion-stream-processing"
-alias csu="set-title 'Clean Motion Usher' && cd /home/thesdev/Projects/clean-motion-stream-processing && cargo run --bin usher"
-alias csv="set-title 'Clean Motion Vehicle Persistor' && cd /home/thesdev/Projects/clean-motion-stream-processing && cargo run --bin vehicle_persistor_elasticsearch"
-alias csc="set-title 'Clean Motion Scheduler' && cd /home/thesdev/Projects/clean-motion-scheduler"
-alias cpu="set-title 'Clean Motion Pulsar' && cd /home/thesdev/Projects/clean-motion-pulsar"
-alias lsp="set-title 'Elevate Cloud Stream Processing' && cd /home/thesdev/Projects/elevate-cloud-stream-processing"
-alias lsu="set-title 'Elevate Cloud Usher' && cd /home/thesdev/Projects/elevate-cloud-stream-processing && cargo run --bin usher"
-alias lsv="set-title 'Elevate Cloud Vehicle Persistor' && cd /home/thesdev/Projects/elevate-cloud-stream-processing && cargo run --bin vehicle_persistor_elasticsearch"
-alias lss="set-title 'Elevate Cloud SIM Data Volume Persistor' && cd /home/thesdev/Projects/elevate-cloud-stream-processing && cargo run --bin sim_data_volume_persistor"
-alias lsc="set-title 'Elevate Cloud Scheduler' && cd /home/thesdev/Projects/elevate-cloud-scheduler"
-alias rpu="set-title 'Roam Pulsar' && cd /home/thesdev/Projects/roam-pulsar"
-alias sr="set-title 'Elevate SDK' && cd /home/thesdev/Projects/sdk-rust"
-alias wcd="set-title 'Wireless Car Dashboard' && cd /home/thesdev/Projects/wireless-car-dashboard"
-alias dos="docker start pulsar-elevate-dev es-elevate redis-elevate-dev"
 
 function dost() {
   docker start pulsar-elevate-dev es-elevate pg-$1-dev redis-elevate-dev
@@ -236,23 +167,7 @@ function gtr() {
   gio trash --restore trash:///"$1"
 }
 
-function rstdb() {
-PGPASSWORD=postgres dropdb -U postgres -h localhost -p $DB_PORT $DB_NAME
-PGPASSWORD=postgres createdb -U postgres -h localhost -p $DB_PORT $DB_NAME
-
-PGPASSWORD=postgres psql -U postgres -h localhost -p $DB_PORT $DB_NAME <<MYEOF
-CREATE EXTENSION postgis;
-CREATE EXTENSION "uuid-ossp";
-GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;
-GRANT USAGE, CREATE ON SCHEMA public TO $DB_USER;
-MYEOF
-
-cargo sqlx migrate run
-}
-
-eval "$(direnv hook bash)"
-
-export GITLAB_NPM_TOKEN="ttcgl-h8V7dQDaDWqczwmNswiT"
+export KUBECONFIG=$HOME/.kube/config
 export VISUAL=nvim
 export EDITOR="$VISUAL"
 export FZF_DEFAULT_COMMAND="rg --files --hidden --follow --glob '!.git'"
@@ -260,6 +175,3 @@ export FZF_DEFAULT_COMMAND="rg --files --hidden --follow --glob '!.git'"
 export PATH=$PATH:./node_modules/.bin
 export PATH=$PATH:/home/thesdev/.local/bin
 
-
-# Load Angular CLI autocompletion.
-source <(ng completion script)
