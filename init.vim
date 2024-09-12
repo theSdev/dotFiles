@@ -50,27 +50,30 @@ let g:netrw_liststyle = 3
 " Close all buffers except the current one
 noremap <leader>d :%bd\|e#\|bd#<cr>\|'"
 
-" Use tab for trigger completion with characters ahead and navigate.
+" Use tab for trigger completion with characters ahead and navigate
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
+" other plugin before putting this into your config
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
       \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 " Use <c-space> to trigger completion.
 inoremap <silent><expr> <c-space> coc#refresh()
 
-" Make <CR> auto-select the first completion item and notify coc.nvim to
-" format on enter, <cr> could be remapped by other vim plugin
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 
 " Use `,k` and `,j` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
@@ -85,10 +88,10 @@ autocmd FileType rust nmap<buffer> <leader>p :RustFmt<CR>
 nnoremap <leader>s :sp<cr>
 nnoremap <leader>v :vert sp<cr>
 nnoremap <leader>l :silent Ve<CR>
-nnoremap <leader>e :silent E<CR>
+nnoremap <leader>e :silent Ex<CR>
 nnoremap <leader>f :silent FZF<CR>
-nnoremap <leader>g :Grepper<cr>
-let g:grepper = { 'next_tool': '<leader>g' }
+nnoremap <leader>g :Grepper<cr> -- * ':!ios' ':!storybook'
+let g:grepper = { 'prompt_mapping_tool': '<leader>g' }
 
 function! s:CloseNetrw() abort
   for bufn in range(1, bufnr('$'))
@@ -164,19 +167,3 @@ cnoremap <M-f> <S-Right>
 
 " Add (Neo)Vim's native statusline support.
 set statusline=%f\ %h%w%m%r\ %=\ %{coc#status()}\ \ %{get(b:,'coc_current_function','')}\ %l\ %c\ %P
-
-function Sunshine(timer)
-  if filereadable("/home/thesdev/.abend")
-    set background=dark
-  else
-    set background=light
-  endif
-endfunction
-
-
-function! AutoDarkModeSetup()
-  let timer = timer_start(10000, 'Sunshine', {'repeat': -1})
-  call Sunshine(timer) " Initial call to setup the theme
-endfunction
-
-call AutoDarkModeSetup()
